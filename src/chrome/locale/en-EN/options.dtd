@@ -2,6 +2,8 @@
 <!ENTITY paneMain.title "Main">
 <!ENTITY showbody.label "Show message body">
 <!ENTITY showbody.accesskey "S">
+<!ENTITY filter.label "Filter / regexp">
+<!ENTITY filter.accesskey "F">
 <!ENTITY playsound.label "Play sound">
 <!ENTITY playsound.accesskey "P">
 <!ENTITY soundfile.label "Custom sound">

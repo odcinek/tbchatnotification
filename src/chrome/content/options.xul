@@ -17,11 +17,16 @@
 	<prefpane id="paneMain" label="&paneMain.title;">
 		<preferences>
 			<preference id="tbchatnotificationShowbody" name="extensions.tbchatnotification.showbody" type="bool" />
+			<preference id="tbchatnotificationFilter" name="extensions.tbchatnotification.filter" type="string" />
 			<preference id="tbchatnotificationPlaysound" name="extensions.tbchatnotification.playsound" type="bool" />
 			<preference id="tbchatnotificationSoundfile" name="extensions.tbchatnotification.soundfile" type="string" />
 		</preferences>
 		<checkbox preference="tbchatnotificationShowbody" label="&showbody.label;" accesskey="&showbody.accesskey;" />
 		<checkbox preference="tbchatnotificationPlaysound" label="&playsound.label;" accesskey="&playsound.accesskey;" />
+		<vbox>
+			<label control="filter" value="&filter.label;" />
+			<textbox preference="tbchatnotificationFilter" id="filter" accesskey="&filter.accesskey;" value="" placeholder="" />
+		</vbox>
 		<label control="textSoundFile">&soundfile.label;</label>
 		<hbox>
 			<textbox id="textSoundFile" preference="tbchatnotificationSoundfile" />

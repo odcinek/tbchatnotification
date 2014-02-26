@@ -14,6 +14,7 @@ var TbChatNotifier = {
 
 	options : {
 		showbody : false,
+		filter: '',
 		playsound : false,
 		soundfile : ''
 	},
@@ -38,6 +39,9 @@ var TbChatNotifier = {
 				case 'showbody' :
 					this.showbody = prefs.getBoolPref('showbody');
 					break;
+				case 'filter' :
+					this.filter = prefs.getBoolPref('filter');
+					break;
 				case 'playsound' :
 					this.playsound = prefs.getBoolPref('playsound');
 					break;
@@ -49,6 +53,7 @@ var TbChatNotifier = {
 		prefs.addObserver('', options, false);
 
 		options.showbody = prefs.getBoolPref('showbody');
+		options.filter = prefs.getCharPref('filter');
 		options.playsound = prefs.getBoolPref('playsound');
 		options.soundfile = prefs.getCharPref('soundfile');
 
@@ -59,21 +64,30 @@ var TbChatNotifier = {
 		Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 		Cu.import('resource://gre/modules/Services.jsm');
 
-		var OBSERVER_TOPIC = 'new-directed-incoming-message';
+		var OBSERVER_TOPIC1 = 'new-directed-incoming-message';
+		var OBSERVER_TOPIC2 = 'new-text';
 
 		var notifier = this;
 		var observer = this.observer = {
 			observe: function(subject, topic, data) {
-				if (topic == OBSERVER_TOPIC) {
+				if (topic == OBSERVER_TOPIC1) {
 					notifier.play();
 					notifier.notify(subject.alias, subject.originalMessage);
+				}
+				if (topic == OBSERVER_TOPIC2 && notifier.options.filter) {
+					var pattern = new RegExp(".*" + notifier.options.filter + ".*");
+					if (pattern.test(subject.originalMessage)) {
+					  notifier.play();
+					  notifier.notify(subject.alias, subject.originalMessage);
+				  }
 				}
 			},
 
 			QueryInterface: XPCOMUtils.generateQI([Ci.nsIObserver, Ci.nsISupportsWeakReference])
 		};
 
-		Services.obs.addObserver(observer, OBSERVER_TOPIC, true);
+		Services.obs.addObserver(observer, OBSERVER_TOPIC2, true);
+		Services.obs.addObserver(observer, OBSERVER_TOPIC1, true);
 	},
 
 	/**
@@ -81,7 +95,8 @@ var TbChatNotifier = {
 	 */
 	unload : function() {
 		this.prefs.addObserver('', this.options);
-		Services.obs.removeObserver(this.observer, OBSERVER_TOPIC);
+		Services.obs.removeObserver(this.observer, OBSERVER_TOPIC1);
+		Services.obs.removeObserver(this.observer, OBSERVER_TOPIC2);
 	},
 
 	/**
